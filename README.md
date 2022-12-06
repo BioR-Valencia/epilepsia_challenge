@@ -1,4 +1,4 @@
-epilepsia_challenge
+Epilepsia challenge
 ==============================
 
 A short description of the project.
@@ -12,6 +12,18 @@ To start, we need to do some steps:
   - _Windows:_ `venv\Scripts\activate.bat`
 - Install pip packages:
   - `pip install -r requirements.txt`
+
+## How to commit
+To download the latest changes at the repo:
+- `git pull`
+- It's important to do this every time before start to code to avoid code incompatibility issues.
+
+To make your changes available to everyone, you must commit your changes:
+- `git add .`
+- `git commit -m "A short description of your changes"`
+- There is a pre-commit hook that review your changes before the commit. If it fails, you must repeat the two steps until all hooks are passed.
+- It is recommended to commit every time you add/complete a new feature or function
+- Finally, to upload to github: `git push`
 
 
 Project Organization
