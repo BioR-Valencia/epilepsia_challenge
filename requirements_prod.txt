@@ -1,0 +1,12 @@
+# These are the dependencies used to create your docker image.
+# This should be a subset of the python dependencies from `requirements.txt`
+# Only include the libraries actually needed to perform predictions.
+
+numpy==1.23.2
+pandas==1.4.0
+pyarrow     # Needed to load parquet files in pandas
+fastparquet # Needed to load parquet files in pandas
+
+# ADITIONAL LIBRARIES YOU MIGHT CONSIDER USING
+# scipy==1.9.0
+# scikit-learn==1.1.2

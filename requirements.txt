@@ -40,3 +40,4 @@ sphinxcontrib-serializinghtml==1.1.5
 toml==0.10.2
 urllib3==1.26.13
 virtualenv==20.17.1
+-r requirements_prod.txt
