@@ -12,8 +12,16 @@ To start, we need to do some steps:
   - _Windows:_ `venv\Scripts\activate.bat`
 - Install pip packages:
   - `pip install -r requirements.txt`
+- Install git precommit hooks:
+  - `pre-commit install`
 
 ## How to commit
+To clone the repository:
+- `git clone https://github.com/BioR-Valencia/epilepsia_challenge.git`
+
+To create a new branch:
+- `git checkout -b <branch_name>`
+
 To download the latest changes at the repo:
 - `git pull`
 - It's important to do this every time before start to code to avoid code incompatibility issues.
@@ -25,6 +33,13 @@ To make your changes available to everyone, you must commit your changes:
 - It is recommended to commit every time you add/complete a new feature or function
 - Finally, to upload to github: `git push`
 
+## Useful things for jupyter notebooks
+Executing the following lines in a jupyter cell, we can update our imported scripts and jupyter will reimport the script
+automatically:
+```
+%load_ext autoreload
+%autoreload 2
+```
 
 Project Organization
 ------------
