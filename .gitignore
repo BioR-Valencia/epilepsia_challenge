@@ -90,3 +90,5 @@ target/
 
 # Virtual Environment
 venv/
+
+.virtual_documents/
