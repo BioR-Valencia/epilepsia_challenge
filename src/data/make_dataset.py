@@ -21,9 +21,7 @@ class DataLoader:
     def __init__(self, dataset_path):
         self.dataset_path = dataset_path
 
-    def load_dataset(
-        self, max_patients_to_load: int = None, patients_to_skip: int = None
-    ):
+    def load_dataset(self, max_patients_to_load: int = None, patients_to_skip: int = 0):
         patients_list = self._get_patients_list()
 
         if max_patients_to_load:
