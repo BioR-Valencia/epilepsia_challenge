@@ -1,11 +1,10 @@
+from sklearn.metrics import roc_curve, RocCurveDisplay
 import pandas as pd
-from sklearn.metrics import roc_auc_score
+import matplotlib.pyplot as plt
 
-
-def evaluate(preds, labels):
+def roc_curve_plots(preds, labels):
     """Given two dataframes, one containing the predictions and one containing
-    the labels, it returns the Patient-Wise ROC AUC (average value of the
-    separate ROC-AUC scores for each patient).
+    the labels, it prints the ROC curve for the resulting patients.
 
     Args:
         preds: Pandas dataframe with the following two columns `filepath`,
@@ -14,7 +13,7 @@ def evaluate(preds, labels):
             `label`.
 
     Returns:
-        score: Float
+        None
     """
     # Combine `preds` and `labels` into one DataFrame
     df = labels.merge(preds, on="filepath")
@@ -24,13 +23,15 @@ def evaluate(preds, labels):
 
     # Separate results by patient id
     patient_ids = list(df["patient_id"].unique())
-    patient_aucs = {}
+
     for patient_id in patient_ids:
         selection = df[df["patient_id"] == patient_id]
-        patient_aucs[patient_id] = roc_auc_score(
-            selection["label"], selection["prediction"]
-        )
 
-    # Average of AUC results accross patients
-    score = pd.Series(patient_aucs).mean()
-    return score
+        fpr, tpr, _ = roc_curve(selection["label"], selection["prediction"])
+        roc_display = RocCurveDisplay(fpr=fpr, tpr=tpr).plot()
+
+        roc_display.ax_.set_title('Patient: ', patient_id)
+
+    plt.show()
+
+    return None
