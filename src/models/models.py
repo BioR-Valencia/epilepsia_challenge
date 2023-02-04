@@ -1,3 +1,6 @@
+from keras.models import Sequential
+
+
 class BaseModel:
     def __init__(self):
         pass
@@ -6,6 +9,12 @@ class BaseModel:
         pass
 
     def train(self):
+        pass
+
+    def predict(self):
+        pass
+
+    def predict_to_df(self):
         pass
 
 
@@ -25,3 +34,6 @@ class KerasConvModel(BaseModel):
 
     def train(self, x_train, y_train, x_test, y_test, epochs=10, batch_size=200):
         self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=epochs, batch_size=batch_size, verbose=2)
+
+    def predict(self, x):
+        return self.model.predict(x)

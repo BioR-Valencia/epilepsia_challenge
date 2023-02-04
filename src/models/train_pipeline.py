@@ -1,39 +1,49 @@
 from .models import KerasConvModel, BaseModel
-from .
+import matplotlib.pyplot as plt # Para los plots
+import numpy  as np # Para los plots
 
+def plots_history(H,n_epochs):
+    # Gráficas
+    plt.style.use("ggplot")
+    plt.figure()
+    plt.plot(np.arange(0, n_epochs), H.history["loss"], label="train_loss")
+    plt.plot(np.arange(0, n_epochs), H.history["val_loss"], label="val_loss")
+    plt.plot(np.arange(0, n_epochs), H.history["accuracy"], label="train_acc")
+    plt.plot(np.arange(0, n_epochs), H.history["val_accuracy"], label="val_acc")
+    plt.title("Training Loss and Accuracy")
+    plt.xlabel("Epoch #")
+    plt.ylabel("Loss/Accuracy")
+    plt.legend()
+    plt.show()
 
-def train_pipeline(model: BaseModel, x_train, y_train, x_test, y_test, epochs=10, batch_size=200):
+def train_pipeline(model: BaseModel, optimizer_alg, train_gen, valgen, epochs=30, batch_size=200):
 
     """Train the model."""
 
-    # load data
+    # load data con generador
+        # datagen
+        # train_generator = datagen.flow_from_directory(
+        # val_generator = datagen.flow_from_directory(
 
-    data = load_data()
-
-    X_train = data['X_train']
-
-    y_train = data['y_train']
-
-    X_test = data['X_test']
-
-    y_test = data['y_test']
-
-    # train model
-
+    
+    # build model
     model.build()
-    model.train(X_train, y_train, X_test, y_test, epochs=epochs, batch_size=batch_size)
 
-    # evaluate model
+    # train model H = History of training process
+    H = model.train(X_train, y_train, X_test, y_test, epochs=epochs, batch_size=batch_size)
 
-    evaluate_model(model, X_test, y_test)
+    # plot results
+    plots_history(H, epochs)
+
+    # evaluate_model(model, X_test, y_test)
 
     # save model for future use
 
-    save_model(model, MODEL_FILE_NAME)
+    #save_model(model, MODEL_FILE_NAME)
 
     # save evaluation metrics for future use
 
-    save_evaluation_metrics(model, X_test, y_test, EVALUATION_FILE_NAME)
+    #save_evaluation_metrics(model, X_test, y_test, EVALUATION_FILE_NAME)
 
 
 
