@@ -60,6 +60,9 @@ class DataLoader:
                     current_data, agg_feat_data = feature_extraction_function(
                         current_data, agg_feat_data, **kwargs
                     )
+                    # print(
+                    #     f"columns = {agg_feat_data.columns if agg_feat_data is not None else None}"
+                    # )
                 if agg_feat_data is None:
                     final_data = current_data
                 else:
@@ -90,7 +93,7 @@ class DataLoader:
     def _split_dataset_labels(self, labels: pd.DataFrame):
         labels = self._filter_folders_without_min_files(labels)
         labels = self._prune_labels(labels)
-        print(f"n_labels: {labels}")
+        # print(f"n_labels: {labels}; %_1: {labels['label'].mean()}")
 
         # Split labels in train and test with sklearn
         train_labels, test_labels = train_test_split(

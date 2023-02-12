@@ -33,6 +33,7 @@ def train_pipeline(
     feature_extraction_functions = [
         (Preprocessor().convert_time_to_radians, {}),
         (FeatExtractor().mean, {}),
+        (FeatExtractor().std, {}),
     ]
 
     train_generator, test_generator = data_loader.get_generators(
@@ -72,6 +73,7 @@ def train_pipeline(
     # save evaluation metrics for future use
 
     # save_evaluation_metrics(model, X_test, y_test, EVALUATION_FILE_NAME)
+    return model, report
 
 
 if __name__ == "__main__":
