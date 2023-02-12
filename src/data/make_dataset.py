@@ -19,12 +19,9 @@ def example_function():
 
 
 class DataLoader:
-    def __init__(self, dataset_path):
+    def __init__(self, dataset_path, labels_path: str = "E:/Epilepsy challenge/"):
         self.dataset_path = dataset_path
-        if os.path.exists(
-            "E:/Epilepsy challenge/train_labels.csv"
-        ):
-            self._labels = self._load_labels()
+        self._labels = self._load_labels(labels_path)
 
     def load_dataset(
         self,
@@ -134,11 +131,9 @@ class DataLoader:
             dataset = self._create_or_append_patient_file(patient_file, label, dataset)
         return dataset
 
-    def _load_labels(self):
-        return pd.read_csv(
-            # "/".join(self.dataset_path.split("/")[:-1]) + "/labels/train_labels.csv"
-            "E:/Epilepsy challenge/train_labels.csv"
-        )
+    @staticmethod
+    def _load_labels(labels_path: str):
+        return pd.read_csv(os.path.join(labels_path, "train_labels.csv"))
 
     def _create_or_append_patient_file(
         self,
