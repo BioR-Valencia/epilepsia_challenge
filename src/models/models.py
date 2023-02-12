@@ -51,28 +51,19 @@ class SKLearnBaseModel(BaseModel):
 
     @staticmethod
     def iterate_generator(generator):
-        X = []
+        X = pd.DataFrame()
         y = []
         filepaths = []
         for idx, (data, label, filepath) in enumerate(generator):
-            if idx + 1 > 20:
-                break
-            # data = next(train_generator)
-            data = data.loc[0]
-            # print('Fila: ', idx)
-            # print(data,'\n')
-            data = [num for num in data]
-            X.append(data)
+            # if idx + 1 > 200:
+            #     break
+            # data = [num for num in data]
+            X = pd.concat([X, data], axis=1)
             # print('df: ', X,'\n')
             y.append(label)
             filepaths.append(filepath)
 
-        X = np.vstack(X)
-        # print('\n------ valores totales\n')
-        # print(X.shape)
-        # print(X)
-
-        return X, y, filepaths
+        return X.to_numpy().T, y, filepaths
 
 
 # clase de un modelo AdaBoost de Sklearn con decision trees como base
@@ -88,6 +79,7 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
     def train(self, train_generator, **kwargs):
 
         X_train, y_train, _ = self.iterate_generator(train_generator)
+        print(X_train.shape)
 
         self.model.fit(X_train, y_train)
 
@@ -95,6 +87,7 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
         X_test, y_test, filepath = self.iterate_generator(data_generator)
 
         y_prob = self.model.predict_proba(X_test)[:, 1]
+        print(y_prob.shape)
 
         return y_prob, y_test, filepath
 

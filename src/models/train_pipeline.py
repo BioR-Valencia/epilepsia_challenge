@@ -2,6 +2,8 @@
 import numpy as np  # Para los plots
 
 from src.data.make_dataset import DataLoader
+from src.features.build_features import FeatExtractor
+from src.features.Preprocessor import Preprocessor
 
 from ..evaluation import confusion_matrix_plot, evaluate_report, roc_curve_plot
 from .models import BaseModel, KerasConvModel, SklearnAdaBoostModel
@@ -28,7 +30,14 @@ def train_pipeline(
     visualize: bool = False,
 ):
 
-    train_generator, test_generator = data_loader.get_generators(1110)
+    feature_extraction_functions = [
+        (Preprocessor().convert_time_to_radians, {}),
+        (FeatExtractor().mean, {}),
+    ]
+
+    train_generator, test_generator = data_loader.get_generators(
+        1110, feature_extraction_functions=feature_extraction_functions
+    )
 
     """Train the model."""
 

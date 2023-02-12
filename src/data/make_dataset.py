@@ -63,7 +63,7 @@ class DataLoader:
                 if agg_feat_data is None:
                     final_data = current_data
                 else:
-                    final_data = agg_feat_data 
+                    final_data = agg_feat_data
 
                 yield final_data, label, patient_file
 
@@ -77,11 +77,11 @@ class DataLoader:
                     current_data, agg_feat_data = feature_extraction_function(
                         current_data, agg_feat_data, **kwargs
                     )
-                
+
                 if agg_feat_data is None:
                     final_data = current_data
                 else:
-                    final_data = agg_feat_data 
+                    final_data = agg_feat_data
 
                 yield final_data, label, patient_file
 
@@ -90,6 +90,7 @@ class DataLoader:
     def _split_dataset_labels(self, labels: pd.DataFrame):
         labels = self._filter_folders_without_min_files(labels)
         labels = self._prune_labels(labels)
+        print(f"n_labels: {labels}")
 
         # Split labels in train and test with sklearn
         train_labels, test_labels = train_test_split(
@@ -100,7 +101,7 @@ class DataLoader:
     @staticmethod
     def _prune_labels(labels: pd.DataFrame):
         labels["sum_next_5_labels"] = 0
-        for i in range(1, 6):
+        for i in range(7):
             labels["sum_next_5_labels"] += labels["label"].shift(-i)
 
         labels_near_to_1 = labels[labels["sum_next_5_labels"] > 0]
