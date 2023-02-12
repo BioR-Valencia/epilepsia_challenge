@@ -1,10 +1,11 @@
-import matplotlib.pyplot as plt  # Para los plots
+#import matplotlib.pyplot as plt  # Para los plots
 import numpy as np  # Para los plots
 
 from src.data.make_dataset import DataLoader
 
-from .models import BaseModel, KerasConvModel
+from .models import BaseModel, KerasConvModel, SklearnAdaBoostModel
 
+from ..evaluation import evaluate_report, confusion_matrix_plot, roc_curve_plot
 
 def plots_history(H, n_epochs):
     # Gráficas
@@ -40,6 +41,17 @@ def train_pipeline(
     # plots_history(H, epochs)
 
     # evaluate_model(model, X_test, y_test)
+    predict_dfs = model.predict_to_df(test_generator, treshold = 0.5)
+
+    confusion_matrix_plot(predict_dfs['preds'], predict_dfs['labels'])
+
+    roc_curve_plot(predict_dfs['preds'], predict_dfs['labels'])
+
+    report = evaluate_report(predict_dfs['preds'], predict_dfs['labels'])
+
+    print('Resultado AUC: ', report['patient_aucs'],'\n')
+    print('Reporte: ', report['patients_report'],'\n')
+
 
     # save model for future use
 

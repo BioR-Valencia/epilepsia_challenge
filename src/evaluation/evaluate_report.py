@@ -5,11 +5,10 @@ def evaluate(preds, labels):
     """Given two dataframes, one containing the predictions and one containing
     the labels, it returns a report with:
 
-    - Patient-Wise classification report: precision, recall, f1-score, support for 0s & 1s
+    - Patient-Wise classification report: precision, recall, f1-score, support for 0s & 1s 
+            *in string format (can be printed)*
     - Patient-Wise ROC AUC
     - Patient-Wise confusion matrix
-    the Patient-Wise ROC AUC (average value of the
-    separate ROC-AUC scores for each patient).
 
     Args:
         preds: Pandas dataframe with the following two columns `filepath`,
@@ -37,7 +36,7 @@ def evaluate(preds, labels):
         selection = df[df["patient_id"] == patient_id]
         # Patient-wise classification report
         patients_report[patient_id] = classification_report(
-            selection["label"], selection["prediction"]
+            selection["filepath"], selection["label"], selection["prediction"]
         )
         # Patient-wise AUC
         patient_aucs[patient_id] = roc_auc_score(
@@ -49,9 +48,9 @@ def evaluate(preds, labels):
         )
 
     dict_final = {
-        "report": report,   # Classification report
+        "report": patients_report,   # Classification report
         "patient_aucs": patient_aucs,     # Patient-wise AUC scores
-        "matrix": matrix,   # Confusion matrix
+        "matrix": patient_matrices,   # Confusion matrix
     }
 
     return dict_final
