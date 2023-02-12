@@ -55,24 +55,35 @@ class DataLoader:
                 current_data = self._parquet_reader_function(
                     os.path.join(self.dataset_path, patient_file)
                 )
-                feature_data = None
+                agg_feat_data = None
                 for feature_extraction_function, kwargs in feature_extraction_functions:
-                    current_data, feature_data = feature_extraction_function(
-                        current_data, feature_data, **kwargs
+                    current_data, agg_feat_data = feature_extraction_function(
+                        current_data, agg_feat_data, **kwargs
                     )
-                yield current_data, label, patient_file
+                if agg_feat_data is None:
+                    final_data = current_data
+                else:
+                    final_data = agg_feat_data 
+
+                yield final_data, label, patient_file
 
         def test_generator():
             for patient_file, label in test_labels.values:
                 current_data = self._parquet_reader_function(
                     os.path.join(self.dataset_path, patient_file)
                 )
-                feature_data = None
+                agg_feat_data = None
                 for feature_extraction_function, kwargs in feature_extraction_functions:
-                    current_data, feature_data = feature_extraction_function(
-                        current_data, feature_data, **kwargs
+                    current_data, agg_feat_data = feature_extraction_function(
+                        current_data, agg_feat_data, **kwargs
                     )
-                yield current_data, label, patient_file
+                
+                if agg_feat_data is None:
+                    final_data = current_data
+                else:
+                    final_data = agg_feat_data 
+
+                yield final_data, label, patient_file
 
         return train_generator(), test_generator()
 
