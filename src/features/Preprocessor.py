@@ -8,6 +8,7 @@ preproc = Preprocessor()
 import numpy as np
 from scipy import signal
 import pandas as pd
+import math
 
 class Preprocessor:
     """Class that includes methods for the preprocessing the data.
@@ -21,6 +22,28 @@ class Preprocessor:
         self.zi_filter = None
         self.fs = 128 # Hz
 
+
+    def detect_nans(self, df: pd.DataFrame, variable: str = ""):
+        if variable == "":
+            num_nans = df.isnull().sum().sum()
+        else:
+            num_nans = df[variable].isnull().sum()
+        return num_nans
+
+    def convert_time_to_radians(self, data, feats):
+
+        dates = pd.to_datetime(data["utc_timestamp"], unit='s')
+        hours = dates.dt.hour
+        minutes = dates.dt.minute
+        seconds = dates.dt.second
+
+        seconds_from_00 = hours*3600 + minutes*60 + seconds
+        radians = 2*math.pi*seconds_from_00/(24*3600)
+
+        data["time_sin"] = np.sin(radians)
+        data["time_cos"] = np.cos(radians)
+
+        return data, feats
 
     # def remove_baseline(self, sig, order = 1, low_f = 1):
 
@@ -80,10 +103,5 @@ class Preprocessor:
 
     #     return filtered_sig
 
-    def detect_nans(self, df: pd.DataFrame, variable: str = ""):
-        if variable == "":
-            num_nans = df.isnull().sum().sum()
-        else:
-            num_nans = df[variable].isnull().sum()
-        return num_nans
+    
 

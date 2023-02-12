@@ -7,6 +7,6 @@ pandas==1.4.0
 pyarrow     # Needed to load parquet files in pandas
 fastparquet # Needed to load parquet files in pandas
 scipy==1.9.0
-
+scikit-learn==1.1.2
 # ADITIONAL LIBRARIES YOU MIGHT CONSIDER USING
-# scikit-learn==1.1.2
+

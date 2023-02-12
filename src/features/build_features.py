@@ -11,32 +11,28 @@ import pandas as pd
 
 class FeatExtractor:
 
-    def __init__(generator):
-
-        self.generator = generator
-
-
     def mean(self, data, feats, variable = ""):
         
-        if vairable == "":
-            feat_means = data.mean()            
+        if variable == "":
+            feat_means = data.mean(numeric_only = True) 
+            feat_means.index = feat_means.index + "_mean"        
         else:
-            feat_means = data[variable].mean()
+            feat_means = data[variable].mean(numeric_only = True)
+            feat_means = pd.Series(feat_means, index = [variable + "_mean"]) 
 
-        feat_means.columns = feat_means.columns + "_mean"      
-
-        return pd.concat([feats, feat_means])
+        return data, pd.concat([feats, feat_means])
 
     def std(self, data, feats, variable = ""):
         
-        if vairable == "":
-            feat_stds = data.std()            
+        if variable == "":
+            feat_stds = data.std(numeric_only = True) 
+            feat_stds.index = feat_stds.index + "_std"        
         else:
-            feat_stds = data[variable].std()
+            feat_stds = data[variable].std(numeric_only = True)
+            feat_stds = pd.Series(feat_stds, data[variable].columns + "_std") 
 
-        feat_stds.columns = feat_stds.columns + "_std"      
-
-        return pd.concat([feats, feat_stds])
+        return data, pd.concat([feats, feat_stds])
+        
 
 
     
