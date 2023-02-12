@@ -1,9 +1,10 @@
 # from keras.layers import Conv2D, Dense, Flatten, MaxPooling2D
 # from keras.models import Sequential
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+
 
 class BaseModel:
     def __init__(self):
@@ -23,9 +24,8 @@ class BaseModel:
 
 
 class SKLearnBaseModel(BaseModel):
-
     def predict_to_df(self, data_generator, treshold):
-        # Given data samples, it returns two dataframes with the predictions and the 
+        # Given data samples, it returns two dataframes with the predictions and the
         #    truthground labels of the specific samples.
         # Args:
         #     model: the saved trained model to compuct the predictions.
@@ -33,9 +33,9 @@ class SKLearnBaseModel(BaseModel):
         #     treshold: a float number between 0 and 1. The treshold to convert the predictions to 0s and 1s.
         # Returns:
         #     a list with 2 dataframes. The dataframes are returned in the following format:
-        #         df1: | filepath | prediction | 
+        #         df1: | filepath | prediction |
         #         df2: |  filepath | label |
-        
+
         # Compute predictions
         y_prob, y_test, filepath = self.predict(data_generator)
         # Convert predictions to 0s and 1s
@@ -46,7 +46,7 @@ class SKLearnBaseModel(BaseModel):
         df_labels = pd.DataFrame({"filepath": filepath, "label": y_test})
         # Return the two dataframes
         dict_dfs = {"preds": df_preds, "labels": df_labels}
-        
+
         return dict_dfs
 
     @staticmethod
@@ -55,7 +55,7 @@ class SKLearnBaseModel(BaseModel):
         y = []
         filepaths = []
         for idx, (data, label, filepath) in enumerate(generator):
-            if idx+1 > 20:
+            if idx + 1 > 20:
                 break
             # data = next(train_generator)
             data = data.loc[0]
@@ -75,7 +75,6 @@ class SKLearnBaseModel(BaseModel):
         return X, y, filepaths
 
 
-
 # clase de un modelo AdaBoost de Sklearn con decision trees como base
 class SklearnAdaBoostModel(SKLearnBaseModel):
     def __init__(self):
@@ -87,7 +86,7 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
         self.model = AdaBoostClassifier(estimator=base_estimator, n_estimators=100)
 
     def train(self, train_generator, **kwargs):
-        
+
         X_train, y_train, _ = self.iterate_generator(train_generator)
 
         self.model.fit(X_train, y_train)
@@ -95,9 +94,10 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
     def predict(self, data_generator):
         X_test, y_test, filepath = self.iterate_generator(data_generator)
 
-        y_prob= self.model.predict_proba(X_test)
+        y_prob = self.model.predict_proba(X_test)[:, 1]
 
         return y_prob, y_test, filepath
+
 
 # clase de un modelo convolucional de Keras
 class KerasConvModel(BaseModel):
