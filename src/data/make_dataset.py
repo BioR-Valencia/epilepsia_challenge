@@ -22,7 +22,7 @@ class DataLoader:
     def __init__(self, dataset_path):
         self.dataset_path = dataset_path
         if os.path.exists(
-            "/".join(dataset_path.split("/")[:-1]) + "/labels/train_labels.csv"
+            "E:/Epilepsy challenge/train_labels.csv"
         ):
             self._labels = self._load_labels()
 
@@ -120,7 +120,8 @@ class DataLoader:
 
     def _load_labels(self):
         return pd.read_csv(
-            "/".join(self.dataset_path.split("/")[:-1]) + "/labels/train_labels.csv"
+            # "/".join(self.dataset_path.split("/")[:-1]) + "/labels/train_labels.csv"
+            "E:/Epilepsy challenge/train_labels.csv"
         )
 
     def _create_or_append_patient_file(
