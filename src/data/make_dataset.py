@@ -103,11 +103,10 @@ class DataLoader:
 
         # Split labels in train and test with sklearn
         train_labels, test_labels = train_test_split(
-            labels, test_size=0.5, random_state=42, stratify=labels["label"]
+            labels, test_size=0.33, random_state=42, 
+            # stratify=labels["label"],
+            shuffle = False # Removing the shuffle to keep the events together
         )
-        train_labels, test_labels = train_test_split(
-            labels, test_size=0.33, shuffle = False
-        ) # Removing the shuffle to keep the events together
 
         return train_labels, test_labels
 
@@ -117,7 +116,7 @@ class DataLoader:
         labels["sum_prev_5_labels"] = 0
         for i in range(math.ceil(7*labels_prop/2)):
             labels["sum_next_5_labels"] += labels["label"].shift(-i)
-        for i in range(math.floor(7*labels_prop/2)):
+        for i in range(math.ceil(7*labels_prop/2)):
             labels["sum_prev_5_labels"] += labels["label"].shift(+i)
 
         mask = (labels["sum_next_5_labels"] > 0) | (labels["sum_prev_5_labels"] > 0)
