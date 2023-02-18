@@ -28,14 +28,14 @@ class Preprocessor:
             num_nans = data.isnull().sum().sum()
 
             if num_nans > 0:
-                return None
-            else:
-                return data
+                data = None
+                
         else:
             num_nans = data[variable].isnull().sum()
             nan_columns = variable[num_nans > 0]
             data.drop(columns = nan_columns, inplace = True)
-            return data
+            
+        return data, feats
         
 
     def convert_time_to_radians(self, data, feats):

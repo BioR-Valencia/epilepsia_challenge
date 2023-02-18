@@ -61,9 +61,9 @@ class DataLoader:
                         current_data, agg_feat_data, **kwargs
                     )
 
-                    if current_data == None :
+                    if current_data is None:
                         break
-                    
+
                     # print(
                     #     f"columns = {agg_feat_data.columns if agg_feat_data is not None else None}"
                     # )
