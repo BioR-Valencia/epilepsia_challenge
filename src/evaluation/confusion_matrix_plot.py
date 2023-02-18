@@ -2,7 +2,7 @@ from sklearn.metrics import ConfusionMatrixDisplay
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def confusion_matrix_plots(preds, labels, class_names = ['Inter-ictal','Pre-ictal'], normalize = False):
+def confusion_matrix_plots(preds, labels, class_names = ['Inter-ictal','Pre-ictal'], normalize = None):
     """Given two dataframes, one containing the predictions and one containing
     the labels, it prints the confusion matrix for the resulting patients.
 
@@ -36,7 +36,7 @@ def confusion_matrix_plots(preds, labels, class_names = ['Inter-ictal','Pre-icta
          cmap=plt.cm.Blues,
          normalize=normalize,
         )
-        disp.ax_.set_title('Patient: ', patient_id)
+        disp.ax_.set_title('Patient: {}'.format(patient_id))
 
     plt.show()
 

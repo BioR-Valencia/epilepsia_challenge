@@ -30,7 +30,7 @@ def roc_curve_plots(preds, labels):
         fpr, tpr, _ = roc_curve(selection["label"], selection["prediction"])
         roc_display = RocCurveDisplay(fpr=fpr, tpr=tpr).plot()
 
-        roc_display.ax_.set_title('Patient: ', patient_id)
+        roc_display.ax_.set_title('Patient: {}'.format(patient_id))
 
     plt.show()
 

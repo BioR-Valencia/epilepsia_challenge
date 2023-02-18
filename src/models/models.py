@@ -58,6 +58,11 @@ class SKLearnBaseModel(BaseModel):
             # if idx + 1 > 200:
             #     break
             # data = [num for num in data]
+
+            # Skip empty data (it was identified as NaN in the feature extraction)
+            if data is None:
+                continue
+
             X = pd.concat([X, data], axis=1)
             # print('df: ', X,'\n')
             y.append(label)
@@ -79,6 +84,7 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
     def train(self, train_generator, **kwargs):
 
         X_train, y_train, _ = self.iterate_generator(train_generator)
+        print('\nTraining shape: ')
         print(X_train.shape)
 
         self.model.fit(X_train, y_train)
@@ -87,6 +93,7 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
         X_test, y_test, filepath = self.iterate_generator(data_generator)
 
         y_prob = self.model.predict_proba(X_test)[:, 1]
+        print('\nVal shape: ')
         print(y_prob.shape)
 
         return y_prob, y_test, filepath

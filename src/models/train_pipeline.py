@@ -38,7 +38,7 @@ def train_pipeline(
         (FeatExtractor().std, {}),
     ]
 
-    print('Calling data from patient: ' + str(patient_id) + '... \n')
+    print('Calling data from patient ' + str(patient_id) + ' ... \n')
 
     train_generator, test_generator = data_loader.get_generators(
         patient_id, feature_extraction_functions=feature_extraction_functions
@@ -60,7 +60,7 @@ def train_pipeline(
 
     if visualize:
         confusion_matrix_plot.confusion_matrix_plots(
-            predict_dfs["preds"], predict_dfs["labels"]
+            predict_dfs["preds"], predict_dfs["labels"], normalize='true'
         )
 
         roc_curve_plot.roc_curve_plots(predict_dfs["preds"], predict_dfs["labels"])
