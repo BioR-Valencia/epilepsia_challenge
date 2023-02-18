@@ -29,6 +29,7 @@ def train_pipeline(
     model: BaseModel,
     patient_id: int = 1110,
     visualize: bool = False,
+    normalize = None,
     labels_prop: float = 2
 ):
 
@@ -61,7 +62,7 @@ def train_pipeline(
 
     if visualize:
         confusion_matrix_plot.confusion_matrix_plots(
-            predict_dfs["preds"], predict_dfs["labels"], normalize='true'
+            predict_dfs["preds"], predict_dfs["labels"], normalize=normalize
         )
 
         roc_curve_plot.roc_curve_plots(predict_dfs["preds"], predict_dfs["labels"])
