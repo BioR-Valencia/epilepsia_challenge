@@ -27,17 +27,21 @@ def plots_history(H, n_epochs):
 def train_pipeline(
     data_loader: DataLoader,
     model: BaseModel,
-    visualize: bool = False,
+    patient_id: int = 1110,
+    visualize: bool = False
 ):
 
     feature_extraction_functions = [
+        (Preprocessor().remove_nans, {}),
         (Preprocessor().convert_time_to_radians, {}),
         (FeatExtractor().mean, {}),
         (FeatExtractor().std, {}),
     ]
 
+    print('Calling data from patient: ' + str(patient_id) + '... \n')
+
     train_generator, test_generator = data_loader.get_generators(
-        1110, feature_extraction_functions=feature_extraction_functions
+        patient_id, feature_extraction_functions=feature_extraction_functions
     )
 
     """Train the model."""
@@ -64,7 +68,7 @@ def train_pipeline(
     report = evaluate_report.evaluate(predict_dfs["preds"], predict_dfs["labels"])
 
     print("Resultado AUC: ", report["patient_aucs"], "\n")
-    print("Reporte: ", report["report"], "\n")
+    #print("Reporte: ", report["report"], "\n")
 
     # save model for future use
 
