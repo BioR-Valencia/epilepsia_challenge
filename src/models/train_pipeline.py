@@ -1,5 +1,6 @@
 # import matplotlib.pyplot as plt  # Para los plots
 import numpy as np  # Para los plots
+import matplotlib.pyplot as plt
 
 from src.data.make_dataset import DataLoader
 from src.features.build_features import FeatExtractor
