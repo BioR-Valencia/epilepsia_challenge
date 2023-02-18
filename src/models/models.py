@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
-
+from sklearn.linear_model import LogisticRegression
 
 class BaseModel:
     def __init__(self):
@@ -78,8 +78,8 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
         self.model = None
 
     def build(self):
-        base_estimator = DecisionTreeClassifier(max_depth=1)
-        self.model = AdaBoostClassifier(estimator=base_estimator, n_estimators=36)
+        base_estimator = DecisionTreeClassifier()
+        self.model = AdaBoostClassifier(estimator=base_estimator, n_estimators=100)
 
     def train(self, train_generator, **kwargs):
 
@@ -98,6 +98,29 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
 
         return y_prob, y_test, filepath
 
+# Clase de un modelo de regresión logística de Sklearn
+class SklearnLogisticRegressionModel(SKLearnBaseModel):
+    def __init__(self):
+        super().__init__()
+        self.model = None
+
+    def build(self):
+        self.model = LogisticRegression()
+
+    def train(self, train_generator, **kwargs):
+        X_train, y_train, _ = self.iterate_generator(train_generator)
+        print('\nTraining shape: ')
+        print(X_train.shape)
+
+        self.model.fit(X_train, y_train)
+
+    def predict(self, data_generator):
+        X_test, y_test, filepath = self.iterate_generator(data_generator)
+        y_prob = self.model.predict_proba(X_test)[:, 1]
+        print('\nVal shape: ')
+        print(y_prob.shape)
+
+        return y_prob, y_test, filepath
 
 # clase de un modelo convolucional de Keras
 class KerasConvModel(BaseModel):
@@ -150,5 +173,3 @@ class FakeModel(SKLearnBaseModel):
         #fake_path -> '1110/' + ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
 
         return fake_prob, fake_test, fake_path
-
-# clase de un modelo de regresión logística de Sklearn
