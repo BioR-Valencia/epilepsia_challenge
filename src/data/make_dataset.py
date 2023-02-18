@@ -1,6 +1,7 @@
 import logging
 import os
 from abc import abstractmethod
+import math
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -45,10 +46,11 @@ class DataLoader:
     def get_generators(
         self,
         patient_id: int,
+        labels_prop,
         feature_extraction_functions: list[tuple[callable, dict]] = [],
     ):
         patient_labels = self._get_patient_labels(patient_id, skip_missing_files=True)
-        train_labels, test_labels = self._split_dataset_labels(patient_labels)
+        train_labels, test_labels = self._split_dataset_labels(patient_labels, labels_prop)
 
         def train_generator():
             for patient_file, label in train_labels.values:
@@ -94,9 +96,9 @@ class DataLoader:
 
         return train_generator(), test_generator()
 
-    def _split_dataset_labels(self, labels: pd.DataFrame):
+    def _split_dataset_labels(self, labels: pd.DataFrame, labels_prop):
         labels = self._filter_folders_without_min_files(labels)
-        labels = self._prune_labels(labels)
+        labels = self._prune_labels(labels, labels_prop)
         # print(f"n_labels: {labels}; %_1: {labels['label'].mean()}")
 
         # Split labels in train and test with sklearn
@@ -110,12 +112,12 @@ class DataLoader:
         return train_labels, test_labels
 
     @staticmethod
-    def _prune_labels(labels: pd.DataFrame):
+    def _prune_labels(labels: pd.DataFrame, labels_prop):
         labels["sum_next_5_labels"] = 0
         labels["sum_prev_5_labels"] = 0
-        for i in range(7):
+        for i in range(math.ceil(7*labels_prop/2)):
             labels["sum_next_5_labels"] += labels["label"].shift(-i)
-        for i in range(7):
+        for i in range(math.floor(7*labels_prop/2)):
             labels["sum_prev_5_labels"] += labels["label"].shift(+i)
 
         mask = (labels["sum_next_5_labels"] > 0) | (labels["sum_prev_5_labels"] > 0)

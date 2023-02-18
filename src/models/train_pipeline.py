@@ -28,7 +28,8 @@ def train_pipeline(
     data_loader: DataLoader,
     model: BaseModel,
     patient_id: int = 1110,
-    visualize: bool = False
+    visualize: bool = False,
+    labels_prop: float = 2
 ):
 
     feature_extraction_functions = [
@@ -41,7 +42,7 @@ def train_pipeline(
     print('Calling data from patient ' + str(patient_id) + ' ... \n')
 
     train_generator, test_generator = data_loader.get_generators(
-        patient_id, feature_extraction_functions=feature_extraction_functions
+        patient_id, labels_prop, feature_extraction_functions=feature_extraction_functions
     )
 
     """Train the model."""
