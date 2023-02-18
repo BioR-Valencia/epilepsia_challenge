@@ -68,7 +68,6 @@ def train_pipeline(
     report = evaluate_report.evaluate(predict_dfs["preds"], predict_dfs["labels"])
 
     print("Resultado AUC: ", report["patient_aucs"], "\n")
-    #print("Reporte: ", report["report"], "\n")
 
     # save model for future use
 

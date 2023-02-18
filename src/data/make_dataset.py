@@ -60,6 +60,10 @@ class DataLoader:
                     current_data, agg_feat_data = feature_extraction_function(
                         current_data, agg_feat_data, **kwargs
                     )
+
+                    if current_data == None :
+                        break
+                    
                     # print(
                     #     f"columns = {agg_feat_data.columns if agg_feat_data is not None else None}"
                     # )
@@ -97,24 +101,28 @@ class DataLoader:
 
         # Split labels in train and test with sklearn
         train_labels, test_labels = train_test_split(
-            labels, test_size=0.2, random_state=42, stratify=labels["label"]
+            labels, test_size=0.5, random_state=42, stratify=labels["label"]
         )
+        train_labels, test_labels = train_test_split(
+            labels, test_size=0.33, shuffle = False
+        ) # Removing the shuffle to keep the events together
+
         return train_labels, test_labels
 
     @staticmethod
     def _prune_labels(labels: pd.DataFrame):
         labels["sum_next_5_labels"] = 0
+        labels["sum_prev_5_labels"] = 0
         for i in range(7):
             labels["sum_next_5_labels"] += labels["label"].shift(-i)
+        for i in range(7):
+            labels["sum_prev_5_labels"] += labels["label"].shift(+i)
 
-        labels_near_to_1 = labels[labels["sum_next_5_labels"] > 0]
+        mask = (labels["sum_next_5_labels"] > 0) | (labels["sum_prev_5_labels"] > 0)
 
-        labels_random_0 = labels[
-            (labels["label"] == 0) & (labels["sum_next_5_labels"] == 0)
-        ].sample(int(len(labels_near_to_1) / 6), random_state=42)
-
-        final_labels = pd.concat([labels_near_to_1, labels_random_0])
+        final_labels = labels[mask]
         final_labels.drop(columns=["sum_next_5_labels"], inplace=True)
+        final_labels.drop(columns=["sum_prev_5_labels"], inplace=True)
         return final_labels
 
     @staticmethod

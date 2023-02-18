@@ -23,12 +23,20 @@ class Preprocessor:
         self.fs = 128 # Hz
 
 
-    def detect_nans(self, df: pd.DataFrame, variable: str = ""):
+    def remove_nans(self, data, feats, variable: str = ""):
         if variable == "":
-            num_nans = df.isnull().sum().sum()
+            num_nans = data.isnull().sum().sum()
+
+            if num_nans > 0:
+                return None
+            else:
+                return data
         else:
-            num_nans = df[variable].isnull().sum()
-        return num_nans
+            num_nans = data[variable].isnull().sum()
+            nan_columns = variable[num_nans > 0]
+            data.drop(columns = nan_columns, inplace = True)
+            return data
+        
 
     def convert_time_to_radians(self, data, feats):
 
