@@ -39,6 +39,10 @@ def train_pipeline(
         (Preprocessor().convert_time_to_radians, {}),
         (FeatExtractor().mean, {}),
         (FeatExtractor().std, {}),
+        (FeatExtractor().coastline, {}),
+        (FeatExtractor().skewness, {}),
+        (FeatExtractor().kurtosis, {}),
+        (FeatExtractor().hjorth_mobility, {}),
     ]
 
     print('Calling data from patient ' + str(patient_id) + ' ... \n')
