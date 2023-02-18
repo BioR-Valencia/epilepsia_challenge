@@ -79,7 +79,7 @@ class SklearnAdaBoostModel(SKLearnBaseModel):
 
     def build(self):
         base_estimator = DecisionTreeClassifier(max_depth=1)
-        self.model = AdaBoostClassifier(estimator=base_estimator, n_estimators=100)
+        self.model = AdaBoostClassifier(estimator=base_estimator, n_estimators=36)
 
     def train(self, train_generator, **kwargs):
 
@@ -126,3 +126,29 @@ class KerasConvModel(BaseModel):
 
     def predict(self, data_generator):
         return self.model.predict(data_generator)
+
+# class fake model to test the pipeline
+class FakeModel(SKLearnBaseModel):
+    def __init__(self):
+        super().__init__()
+        self.model = None
+
+    def build(self):
+        pass
+
+    def train(self, train_generator, **kwargs):
+        pass
+
+    def predict(self, data_generator):
+        # the method will be called by superclass method predict_to_df
+        # returnin a fake probability prediction, a fake label and a fake filepath
+        fake_prob = np.linspace(0.1, 1, 10)
+
+        fake_test = np.array([0,0,1,1,0,0,1,1,1,1]) # 3 true 0, 4 true 1,  1 0 & 2 1 missclassified
+
+        fake_path = list(map('1110/'.__add__,['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']))
+        #fake_path -> '1110/' + ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+        return fake_prob, fake_test, fake_path
+
+# clase de un modelo de regresión logística de Sklearn
