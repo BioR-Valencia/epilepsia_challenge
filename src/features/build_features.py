@@ -6,7 +6,7 @@ featex = FeatExtractor()
 """
 
 import numpy as np
-from scipy import signal
+from scipy.stats import entropy
 import pandas as pd
 
 class FeatExtractor:
@@ -55,12 +55,35 @@ class FeatExtractor:
         """Hjorth complexity.
         https://en.wikipedia.org/wiki/Hjorth_parameters
         """
-        x = np.insert(data, 0, 0, axis=-1)
-        dx = np.diff(x, axis=-1)
-        m_dx = self.hjorth_mobility(dx)
-        m_x = self.hjorth_mobility(data)
-        complexity = np.divide(m_dx, m_x)
-        return complexity
+
+        if variable == "":
+            dx = data.diff()
+            sx = data.std(numeric_only = True)
+            sdx = dx.std(numeric_only = True)
+            mobility = sx/sdx
+
+            ddx = dx.diff()
+            dsx = dx.std(numeric_only = True)
+            sddx = ddx.std(numeric_only = True)
+            dx_mobility = dsx/sddx
+
+            complexity = dx_mobility/mobility
+            complexity.index = complexity.index + "_complexity"
+        else:
+            dx = data[variable].diff()
+            sx = data[variable].std(numeric_only = True)
+            sdx = dx.std(numeric_only = True)
+            mobility = sx/sdx
+
+            ddx = dx.diff()
+            dsx = dx.std(numeric_only = True)
+            sddx = ddx.std(numeric_only = True)
+            dx_mobility = dsx/sddx
+
+            complexity = dx_mobility/mobility
+            complexity = pd.Series(complexity, data[variable].columns + "_complexity")
+
+        return data, pd.concat([feats, complexity])
 
     def skewness(self, data, feats, variable = ""):
 
@@ -87,15 +110,31 @@ class FeatExtractor:
     def coastline(self, data, feats, variable = ""):
 
         if variable == "":
-            dx = data.diff()
+            dx = data.diff().abs()
             coastline = dx.sum(numeric_only = True)
             coastline.index = coastline.index + "_coastline"        
         else:
-            dx = data[variable].diff()
+            dx = data[variable].diff().abs()
             coastline = dx.sum(numeric_only = True)
             coastline = pd.Series(coastline, data[variable].columns + "_coastline") 
 
         return data, pd.concat([feats, coastline])
 
-    
+    def nonlinear_energy(self, data, feats):
+
+        data_numerics_only = data.select_dtypes(include=np.number)
+        nl_energy = (data_numerics_only.iloc[1:-1]**2 - data_numerics_only.iloc[:-2]*data_numerics_only.iloc[2:]).sum()/data_numerics_only.shape[0]
+        nl_energy.index = nl_energy.index + "nl_energy"
+
+        return data, pd.concat([feats, nl_energy])
+
+    def shannon_entropy(self, data, feats):
+
+        data_numerics_only = data.select_dtypes(include=np.number)
+        data_numpy = data_numerics_only.to_numpy()
+        shannon_entropy = entropy(data_numpy)
+        shannon_entropy[shannon_entropy < 0] = 0
+
+        sh_entropy = pd.Series(shannon_entropy, data_numerics_only.columns + "_entropy") 
+        return data, pd.concat([feats, sh_entropy])
 

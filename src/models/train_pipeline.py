@@ -43,6 +43,9 @@ def train_pipeline(
         (FeatExtractor().skewness, {}),
         (FeatExtractor().kurtosis, {}),
         (FeatExtractor().hjorth_mobility, {}),
+        (FeatExtractor().hjorth_complexity, {}),
+        (FeatExtractor().shannon_entropy, {}),
+        (FeatExtractor().nonlinear_energy, {}),
     ]
 
     print('Calling data from patient ' + str(patient_id) + ' ... \n')
