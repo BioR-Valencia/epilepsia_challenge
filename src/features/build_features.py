@@ -11,8 +11,8 @@ import pandas as pd
 
 class FeatExtractor:
 
-    def __valid(self):
-        """ Return a list of valid methods to use in train_pipeline function. """    
+    def __validate__(self):
+        """ Return a list of valid feature methods to use in train_pipeline function. """    
         return ['coastline', 'hjorth_activity', 'hjorth_complexity', 'hjorth_mobility', 'kurtosis', 
                 'mean', 'nonlinear_energy', 'shannon_entropy', 'skewness', 'std']
 

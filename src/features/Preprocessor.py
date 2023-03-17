@@ -22,7 +22,10 @@ class Preprocessor:
         self.zi_filter = None
         self.fs = 128 # Hz
 
-
+    def __validate__(self):
+        """ Return a list of valid preprocessor methods to use in train_pipeline function. """    
+        return ['remove_nans', 'convert_time_to_radians']
+    
     def remove_nans(self, data, feats, variable: str = ""):
         if variable == "":
             num_nans = data.isnull().sum().sum()
