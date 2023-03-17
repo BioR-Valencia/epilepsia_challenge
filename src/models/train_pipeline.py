@@ -31,22 +31,32 @@ def train_pipeline(
     patient_id: int = 1110,
     visualize: bool = False,
     normalize = None,
-    labels_prop: float = 2
+    labels_prop: float = 2,
+    feature_extraction_functions: list = None,
 ):
-
-    feature_extraction_functions = [
-        (Preprocessor().remove_nans, {}),
-        (Preprocessor().convert_time_to_radians, {}),
-        (FeatExtractor().mean, {}),
-        (FeatExtractor().std, {}),
-        (FeatExtractor().coastline, {}),
-        (FeatExtractor().skewness, {}),
-        (FeatExtractor().kurtosis, {}),
-        (FeatExtractor().hjorth_mobility, {}),
-        (FeatExtractor().hjorth_complexity, {}),
-        (FeatExtractor().shannon_entropy, {}),
-        (FeatExtractor().nonlinear_energy, {}),
-    ]
+    if feature_extraction_functions is None:
+        feature_extraction_functions = [
+            (Preprocessor().remove_nans, {}),
+            (Preprocessor().convert_time_to_radians, {}),
+            (FeatExtractor().mean, {}),
+            (FeatExtractor().std, {}),
+            (FeatExtractor().coastline, {}),
+            (FeatExtractor().skewness, {}),
+            (FeatExtractor().kurtosis, {}),
+            (FeatExtractor().hjorth_activity, {}),
+            (FeatExtractor().hjorth_mobility, {}),
+            (FeatExtractor().hjorth_complexity, {}),
+            (FeatExtractor().shannon_entropy, {}),
+            (FeatExtractor().nonlinear_energy, {}),
+        ]
+    else:
+        # Only keep accepted methods in FeatExtractor and Preprocessor class
+        accepted_methods = Preprocessor().__validate__() + FeatExtractor().__validate__()
+        feature_extraction_functions = [
+            f
+            for f in feature_extraction_functions
+            if f[0].__name__ in accepted_methods
+        ]
 
     print('Calling data from patient ' + str(patient_id) + ' ... \n')
 
