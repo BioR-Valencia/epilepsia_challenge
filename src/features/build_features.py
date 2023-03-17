@@ -32,10 +32,28 @@ class FeatExtractor:
             feat_stds = pd.Series(feat_stds, data[variable].columns + "_std") 
 
         return data, pd.concat([feats, feat_stds])
+    
+    def hjorth_activity(self, data, feats, variable = ""):
+        """Hjorth activity.
+        https://en.wikipedia.org/wiki/Hjorth_parameters
+
+        Activity: The activity parameter represents the signal power, the variance of a time function.
+        """
+        if variable == "":
+            feat_vars = data.var(numeric_only = True) 
+            feat_vars.index = feat_vars.index + "_activity"        
+        else:
+            feat_vars = data[variable].var(numeric_only = True)
+            feat_vars = pd.Series(feat_vars, data[variable].columns + "_activity") 
+
+        return data, pd.concat([feats, feat_vars])
 
     def hjorth_mobility(self, data, feats, variable = ""):
         """Hjorth mobility.
         https://en.wikipedia.org/wiki/Hjorth_parameters
+
+        Mobility: the ratio of the standard deviation of the first difference of the signal 
+        to the standard deviation of the signal.
         """
         if variable == "":
             dx = data.diff()
@@ -54,6 +72,10 @@ class FeatExtractor:
     def hjorth_complexity(self, data, feats, variable = ""):
         """Hjorth complexity.
         https://en.wikipedia.org/wiki/Hjorth_parameters
+
+        Complexity: the ratio of the mobility of the first derivate vs the mobility of the signal.
+        This is equivalent to compute the ratio between the standard deviation of the first difference ^ 2
+        vs the product of the std of the signal and the std of the second difference.
         """
 
         if variable == "":
@@ -63,9 +85,9 @@ class FeatExtractor:
             mobility = sx/sdx
 
             ddx = dx.diff()
-            dsx = dx.std(numeric_only = True)
+            # dsx = dx.std(numeric_only = True)
             sddx = ddx.std(numeric_only = True)
-            dx_mobility = dsx/sddx
+            dx_mobility = sdx/sddx # dsx/sddx
 
             complexity = dx_mobility/mobility
             complexity.index = complexity.index + "_complexity"
@@ -76,9 +98,9 @@ class FeatExtractor:
             mobility = sx/sdx
 
             ddx = dx.diff()
-            dsx = dx.std(numeric_only = True)
+            # dsx = dx.std(numeric_only = True)
             sddx = ddx.std(numeric_only = True)
-            dx_mobility = dsx/sddx
+            dx_mobility = sdx/sddx # dsx/sddx
 
             complexity = dx_mobility/mobility
             complexity = pd.Series(complexity, data[variable].columns + "_complexity")
